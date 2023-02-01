@@ -105,8 +105,13 @@ class UserController extends AbstractController
         ApiService $apiService
     ): JsonResponse
     {
-        $user = $userRepository->findOneBy(['id' => $id]);
-        if (empty($user)) {
+        $currentUser = $this->getUser();
+        if (!$currentUser->isAdmin() && $currentUser->getId() != $id) {
+            return $apiService->respondWithErrors('Access forbidden.', Response::HTTP_FORBIDDEN);
+        }
+
+        $requestedUser = $userRepository->findOneBy(['id' => $id]);
+        if (empty($requestedUser)) {
             return $apiService->respondWithErrors('No such user.', Response::HTTP_NOT_FOUND);
         }
 
@@ -114,14 +119,14 @@ class UserController extends AbstractController
         $params = $request->request->all();
         $attributes = $apiService->userRequestParamsToAttributes($params);
 
-        $user = $userRepository->update($user, $attributes);
+        $requestedUser = $userRepository->update($requestedUser, $attributes);
 
-        $errors = $apiService->validateEntity($user);
+        $errors = $apiService->validateEntity($requestedUser);
         if (!empty($errors)) {
             return $apiService->respondWithErrors($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $userRepository->save($user, true);
+        $userRepository->save($requestedUser, true);
 
         return $apiService->respond('User was edited.', Response::HTTP_OK);
     }
