@@ -107,7 +107,7 @@ class UserController extends AbstractController
     {
         $currentUser = $this->getUser();
         if (!$currentUser->isAdmin() && $currentUser->getId() != $id) {
-            return $apiService->respondWithErrors('Access forbidden.', Response::HTTP_FORBIDDEN);
+            return $apiService->respondWithErrors('Access Denied.', Response::HTTP_FORBIDDEN);
         }
 
         $requestedUser = $userRepository->findOneBy(['id' => $id]);

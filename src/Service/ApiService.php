@@ -19,16 +19,17 @@ class ApiService
      *
      * @param  string|array  $data
      * @param  int  $statusCode
+     * @param  array  $headers
      *
      * @return JsonResponse
      */
-    public function respond(string|array $data, int $statusCode): JsonResponse
+    public function respond(string|array $data, int $statusCode, array $headers = []): JsonResponse
     {
         if (is_string($data)) {
             $data = ['message' => $data];
         }
 
-        return new JsonResponse($data, $statusCode);
+        return new JsonResponse($data, $statusCode, $headers);
     }
 
     /**
