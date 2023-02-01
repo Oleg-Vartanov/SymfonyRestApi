@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Service\Helper\ArrayService as Arr;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -64,10 +65,7 @@ class ApiService
      * @return array
      */
     public function userRequestParamsToAttributes(array $params): array {
-        $params['firstName'] = $params['first_name'];
-        $params['lastName'] = $params['last_name'];
-
-        return $params;
+        return Arr::keysSnakeCaseToCamelCase($params);
     }
 
     /**
